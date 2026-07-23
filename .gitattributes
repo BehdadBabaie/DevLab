@@ -1,0 +1,5 @@
+# Keep Linux files LF
+*.sh text eol=lf
+
+# Let Git handle normal text files
+* text=auto
