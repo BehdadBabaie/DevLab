@@ -1,0 +1,13 @@
+{
+  "name": "DevLab",
+
+  "dockerComposeFile": "../compose.yaml",
+
+  "service": "base",
+
+  "workspaceFolder": "/workspace",
+
+  "remoteUser": "dev",
+
+  "shutdownAction": "stopCompose"
+}
