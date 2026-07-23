@@ -1,0 +1,16 @@
+services:
+  base:
+    image: devlab-base
+    build:
+      context: .
+      dockerfile: docker/base/Dockerfile
+      args:
+        DEBIAN_VERSION: ${DEBIAN_VERSION}
+        DEBIAN_MIRROR: ${DEBIAN_MIRROR}
+    volumes:
+      - .:/workspace
+
+    stdin_open: true
+    tty: true
+
+    command: sleep infinity
