@@ -1,26 +1,58 @@
-# Architecture Decisions
+# DevLab Architecture
 
-## ADR-001
+## Mission
 
-Base image is Debian.
+DevLab is a Docker-based development platform that provides reproducible, ready-to-use development environments for programming languages and developer tools without requiring local installation on the host operating system.
 
-Reason:
+---
 
-- Stable
-- Huge package ecosystem
-- Excellent Docker support
+## Goals
 
-Alternatives considered:
+- No language toolchains installed on Windows
+- Reproducible development environments
+- Consistent project structure
+- Easy to extend with new languages and tools
+- VS Code Dev Container support
 
-- Ubuntu
-- Alpine
+---
 
-Decision:
-Debian.
+## Design Principles
 
-## ADR-002
+### Reproducible
 
-One image per language.
+Anyone should be able to clone the repository and obtain the same environment.
 
-Reason:
-Avoid dependency conflicts between toolchains.
+### Isolated
+
+Each environment is independent.
+
+### Consistent
+
+Every language follows the same directory layout.
+
+### Minimal
+
+Only install tools necessary for development.
+
+### Extensible
+
+Adding a new language should require minimal effort.
+
+---
+
+## Repository Layout
+
+docker/
+docs/
+examples/
+scripts/
+
+---
+
+## Supported Categories
+
+- Programming Languages
+- Databases
+- DevOps Tools
+- Cloud CLIs
+- Other Developer Utilities
