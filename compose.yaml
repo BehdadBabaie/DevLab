@@ -1,5 +1,6 @@
 services:
   base:
+    hostname: devlab
     image: devlab-base
     build:
       context: .
