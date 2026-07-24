@@ -1,36 +1,71 @@
 # DevLab
 
-A containerized programming laboratory.
+A Docker-based development platform providing reproducible environments for programming languages and developer tools.
 
-DevLab provides isolated Docker environments for learning programming languages without installing toolchains directly on the host machine.
+---
 
-## Current Languages
+## Why?
 
-- ✅ Python
+Instead of installing multiple SDKs, compilers, interpreters, and CLIs on your Windows machine, DevLab provides isolated development environments using Docker.
 
-## Planned
+---
 
-- Go
+## Features
+
+- Docker Compose
+- VS Code Dev Containers
+- Language-specific environments
+- Reproducible toolchains
+- Minimal host installation
+
+---
+
+## Current Environments
+
+| Environment | Status |
+| ----------- | ------ |
+| Base        | ✅     |
+| Python      | ✅     |
+| Go          | ✅     |
+| Rust        | 🚧     |
+
+---
+
+## Requirements
+
+- Docker Desktop
+- VS Code
+- Dev Containers extension
+
+---
+
+## Quick Start
+
+```bash
+docker compose build python
+docker compose up -d python
+```
+
+Open the folder in VS Code and reopen in the Dev Container.
+
+---
+
+## Repository Structure
+
+docker/
+docs/
+examples/
+scripts/
+
+---
+
+## Roadmap
+
 - Rust
 - Node.js
 - Java
 - C#
+- C/C++
 - Zig
-- Kotlin
-
-## Goals
-
-- One Docker image per language
-- Persistent workspaces
-- VS Code Dev Containers
-- Reproducible environments
-- Minimal host setup<!-- # DevLab
-
-A docker-based development platform for learning programming languages.
-
-## Goals
-
-- Clean Windows installation
-- Reproducible environments
-- Multiple programming languages
-- VS Code integration -->
+- Databases
+- DevOps tools

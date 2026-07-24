@@ -55,3 +55,10 @@ go build
 ```bash
 go fmt
 ```
+
+## Installed Components
+
+| Tool | Version |
+| ---- | ------- |
+| Go   | 1.19    |
+| Git  | 2.39    |
