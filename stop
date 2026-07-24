@@ -1,0 +1,98 @@
+[33mcommit d6e25b706d63190197716f6e2c3c8d05aa856974[m[33m ([m[1;33mtag: [m[1;33mv0.1.0[m[33m)[m
+Author: behdad <behdadbabaie@gmail.com>
+Date:   Fri Jul 24 02:21:00 2026 -0700
+
+    feat(python): complete Python development environment
+
+[1mdiff --git a/.devcontainer/base/devcontainer.json b/.devcontainer/base/devcontainer.json[m
+[1mnew file mode 100644[m
+[1mindex 0000000..cc53f95[m
+[1m--- /dev/null[m
+[1m+++ b/.devcontainer/base/devcontainer.json[m
+[36m@@ -0,0 +1,13 @@[m
+[32m+[m[32m{[m
+[32m+[m[32m  "name": "DevLab",[m
+[32m+[m
+[32m+[m[32m  "dockerComposeFile": "../compose.yaml",[m
+[32m+[m
+[32m+[m[32m  "service": "base",[m
+[32m+[m
+[32m+[m[32m  "workspaceFolder": "/workspace",[m
+[32m+[m
+[32m+[m[32m  "remoteUser": "dev",[m
+[32m+[m
+[32m+[m[32m  "shutdownAction": "stopCompose"[m
+[32m+[m[32m}[m
+[1mdiff --git a/.devcontainer/devcontainer.json b/.devcontainer/devcontainer.json[m
+[1mindex cc53f95..a07325a 100644[m
+[1m--- a/.devcontainer/devcontainer.json[m
+[1m+++ b/.devcontainer/devcontainer.json[m
+[36m@@ -3,11 +3,31 @@[m
+ [m
+   "dockerComposeFile": "../compose.yaml",[m
+ [m
+[31m-  "service": "base",[m
+[32m+[m[32m  "service": "python",[m
+ [m
+   "workspaceFolder": "/workspace",[m
+ [m
+   "remoteUser": "dev",[m
+ [m
+[31m-  "shutdownAction": "stopCompose"[m
+[32m+[m[32m  "shutdownAction": "stopCompose",[m
+[32m+[m
+[32m+[m[32m  "postCreateCommand": "bash .devcontainer/post-create.sh",[m
+[32m+[m
+[32m+[m[32m  "customizations": {[m
+[32m+[m[32m    "vscode": {[m
+[32m+[m[32m      "extensions": [[m
+[32m+[m[32m        "ms-python.python",[m
+[32m+[m[32m        "ms-python.vscode-pylance",[m
+[32m+[m[32m        "charliermarsh.ruff",[m
+[32m+[m[32m        "eamodio.gitlens",[m
+[32m+[m[32m        "ms-azuretools.vscode-docker"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "settings": {[m
+[32m+[m[32m        "editor.formatOnSave": true,[m
+[32m+[m[32m        "files.trimTrailingWhitespace": true,[m
+[32m+[m[32m        "terminal.integrated.defaultProfile.linux": "bash",[m
+[32m+[m[32m        "python.defaultInterpreterPath": "/usr/bin/python3"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+ }[m
+[1mdiff --git a/.devcontainer/post-create.sh b/.devcontainer/post-create.sh[m
+[1mnew file mode 100644[m
+[1mindex 0000000..2d0f183[m
+[1m--- /dev/null[m
+[1m+++ b/.devcontainer/post-create.sh[m
+[36m@@ -0,0 +1,12 @@[m
+[32m+[m[32m#!/usr/bin/env bash[m
+[32m+[m
+[32m+[m[32mecho "=================================="[m
+[32m+[m[32mecho " Welcome to DevLab"[m
+[32m+[m[32mecho "=================================="[m
+[32m+[m
+[32m+[m[32mpython3 --version[m
+[32m+[m[32muv --version[m
+[32m+[m[32mgit --version[m
+[32m+[m
+[32m+[m[32mecho[m
+[32m+[m[32mecho "Devlab is ready!"[m
+\ No newline at end of file[m
+[1mdiff --git a/docker/python/Dockerfile b/docker/python/Dockerfile[m
+[1mindex be945c2..90e1544 100644[m
+[1m--- a/docker/python/Dockerfile[m
+[1m+++ b/docker/python/Dockerfile[m
+[36m@@ -5,8 +5,9 @@[m [mUSER root[m
+ RUN apt-get update && \[m
+     apt-get install -y --no-install-recommends \[m
+         python3 \[m
+[31m-        python3-pip \[m
+[31m-        python3-venv && \[m
+[32m+[m[32m        python3-dev \[m
+[32m+[m[32m        python3-venv \[m
+[32m+[m[32m        build-essential && \[m
+     rm -rf /var/lib/apt/lists/*[m
+ [m
+ USER dev[m

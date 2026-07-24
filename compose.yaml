@@ -62,3 +62,18 @@ services:
     tty: true
 
     command: sleep infinity
+
+  node:
+    image: devlab-node
+
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+
+    volumes:
+      - .:/workspace
+
+    stdin_open: true
+    tty: true
+
+    command: sleep infinity
