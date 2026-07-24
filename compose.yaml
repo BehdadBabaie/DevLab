@@ -15,3 +15,20 @@ services:
     tty: true
 
     command: sleep infinity
+
+  python:
+    image: devlab-python
+
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+
+    hostname: python
+
+    volumes:
+      - .:/workspace
+
+    stdin_open: true
+    tty: true
+
+    command: sleep infinity
