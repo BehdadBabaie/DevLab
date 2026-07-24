@@ -32,3 +32,18 @@ services:
     tty: true
 
     command: sleep infinity
+
+  go:
+    image: devlab-go
+
+    build:
+      context: .
+      dockerfile: docker/go/Dockerfile
+
+    volumes:
+      - .:/workspace
+
+    stdin_open: true
+    tty: true
+
+    command: sleep infinity
