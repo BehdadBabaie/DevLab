@@ -1,7 +1,8 @@
-import sys
 import subprocess
-from devlab.console import console
+import sys
+
 from devlab.compose import get_services
+from devlab.console import console
 
 VERIFY_COMMANDS = {
     "python": [
@@ -39,13 +40,12 @@ def docker_compose(*args: str) -> None:
             "[bold red]✗ Docker is not installed or is not available on your PATH.[/]"
         )
         console.print(
-            "[bold red]Please install Docker Desktop and ensure 'docker' is available on your PATH.[/]"
+            "[bold red]Please install Docker Desktop and ensure 'docker' is available "
+            "on your PATH.[/]"
         )
         sys.exit(1)
-    except subprocess.CalledProcessError as error:
-        console.print(
-            "[bold red]✗ Command failed.[/]"
-        )
+    except subprocess.CalledProcessError:
+        console.print("[bold red]✗ Command failed.[/]")
         sys.exit(1)
 
 
@@ -53,7 +53,7 @@ def is_valid_environment(environment: str) -> bool:
     environments = get_services()
     if environment not in environments:
         console.print(f"[red]Unknown environment:[/] {environment}")
-        console.print(f"Available:")
+        console.print("Available:")
         for env in environments:
             console.print(f" • {env}")
         return False
@@ -65,7 +65,6 @@ def list_environments() -> None:
 
     for environment in get_services():
         console.print(f"✅ [green]{environment}[/]")
-
 
 
 def build_environment(environment: str) -> None:
@@ -96,7 +95,9 @@ def verify_environment(environment: str) -> None:
     commands = VERIFY_COMMANDS.get(environment)
 
     if commands is None:
-        console.print(f"[yellow]No verification commands defined for '{environment}'.[/]")
+        console.print(
+            f"[yellow]No verification commands defined for '{environment}'.[/]"
+        )
         return
 
     script = " && ".join(commands)

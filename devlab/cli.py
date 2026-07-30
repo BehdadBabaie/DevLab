@@ -1,10 +1,12 @@
 import argparse
+
 from devlab.commands import (
-    list_environments,
     build_environment,
+    list_environments,
     run_environment,
     verify_environment,
 )
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
