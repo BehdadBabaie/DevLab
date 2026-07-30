@@ -2,6 +2,7 @@ import subprocess
 import sys
 
 from devlab.compose import get_services
+from devlab.config import settings
 from devlab.console import console
 
 VERIFY_COMMANDS = {
@@ -84,7 +85,7 @@ def run_environment(environment: str) -> None:
         "run",
         "--rm",
         environment,
-        "bash",
+        settings.default_shell,
     )
 
 
@@ -107,7 +108,7 @@ def verify_environment(environment: str) -> None:
         "run",
         "--rm",
         environment,
-        "bash",
+        settings.default_shell,
         "-c",
         script,
     )
