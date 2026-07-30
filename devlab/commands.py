@@ -1,14 +1,7 @@
+import sys
 import subprocess
-
-SUPPORTED_ENVIRONMENTS = [
-    "base",
-    "python",
-    "go",
-    "rust",
-    "node",
-    "C",
-    "C++",
-]
+from devlab.console import console
+from devlab.compose import get_services
 
 VERIFY_COMMANDS = {
     "python": [
@@ -28,48 +21,73 @@ VERIFY_COMMANDS = {
     ],
 }
 
+
+def docker_compose(*args: str) -> None:
+    command = " ".join(args)
+    console.print(f"[dim]$ docker compose {command}[/dim]")
+    try:
+        subprocess.run(
+            [
+                "docker",
+                "compose",
+                *args,
+            ],
+            check=True,
+        )
+    except FileNotFoundError:
+        console.print(
+            "[bold red]✗ Docker is not installed or is not available on your PATH.[/]"
+        )
+        console.print(
+            "[bold red]Please install Docker Desktop and ensure 'docker' is available on your PATH.[/]"
+        )
+        sys.exit(1)
+    except subprocess.CalledProcessError as error:
+        console.print(
+            "[bold red]✗ Command failed.[/]"
+        )
+        sys.exit(1)
+
+
 def is_valid_environment(environment: str) -> bool:
-    if environment not in SUPPORTED_ENVIRONMENTS:
-        print(f"Unknown environment: {environment}")
-        print(f"Available: {', '.join(SUPPORTED_ENVIRONMENTS)}")
+    environments = get_services()
+    if environment not in environments:
+        console.print(f"[red]Unknown environment:[/] {environment}")
+        console.print(f"Available:")
+        for env in environments:
+            console.print(f" • {env}")
+        return False
     return True
 
+
 def list_environments() -> None:
+    console.rule("[bold cyan]DevLab Environments[/]")
 
-    print("Available Devlab environments:")
+    for environment in get_services():
+        console.print(f"✅ [green]{environment}[/]")
 
-    for environment in SUPPORTED_ENVIRONMENTS:
-        print(f" • {environment}")
+
 
 def build_environment(environment: str) -> None:
     if not is_valid_environment(environment):
         return
 
-    subprocess.run(
-        [
-            "docker",
-            "compose",
-            "build",
-            environment
-        ],
-        check=True,
-    )
+    console.print(f"🔨 Building [bold]{environment}[/]...")
+    docker_compose("build", environment)
+
 
 def run_environment(environment: str) -> None:
     if not is_valid_environment(environment):
         return
 
-    subprocess.run(
-        [
-            "docker",
-            "compose",
-            "run",
-            "--rm",
-            environment,
-            "bash",
-        ],
-        check=True,
+    console.print(f"🚀 Launching [bold]{environment}[/]...")
+    docker_compose(
+        "run",
+        "--rm",
+        environment,
+        "bash",
     )
+
 
 def verify_environment(environment: str) -> None:
     if not is_valid_environment(environment):
@@ -78,20 +96,17 @@ def verify_environment(environment: str) -> None:
     commands = VERIFY_COMMANDS.get(environment)
 
     if commands is None:
-        print(f"No verification commands defined fo '{environment}'.")
+        console.print(f"[yellow]No verification commands defined for '{environment}'.[/]")
+        return
 
     script = " && ".join(commands)
 
-    subprocess.run(
-        [
-            "docker",
-            "compose",
-            "run",
-            "--rm",
-            environment,
-            "bash",
-            "-c",
-            script,
-        ],
-        check=True,
+    console.print(f"🔍 Verifying [bold]{environment}[/]...")
+    docker_compose(
+        "run",
+        "--rm",
+        environment,
+        "bash",
+        "-c",
+        script,
     )

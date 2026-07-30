@@ -1,0 +1,16 @@
+[project]
+name = "devlab"
+version = "0.1.0"
+description = "Development environment manager"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6.0.3",
+    "rich>=15.0.0",
+]
+
+[project.scripts]
+devlab = "devlab.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
