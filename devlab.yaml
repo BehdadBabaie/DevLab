@@ -1,0 +1,2 @@
+compose_file_name: compose.yaml
+default_shell: bash

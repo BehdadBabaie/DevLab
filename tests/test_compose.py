@@ -23,6 +23,7 @@ services:
 
     assert services == ["node", "python", "rust"]
 
+
 def test_get_services_returns_empty_list_when_no_services(tmp_path: Path):
     compose = tmp_path / "compose.yaml"
 
