@@ -71,3 +71,28 @@ def test_run_without_shell(monkeypatch):
         "environment": "rust",
         "shell": None,
     }
+
+def test_verify_shell(monkeypatch):
+    called = {}
+
+    def fake_verify(
+        environment: str,
+        shell: str | None = None,
+    ) -> None:
+        called["environment"] = environment
+        called["shell"] = shell
+
+    monkeypatch.setattr(cli, "verify_environment", fake_verify)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["devlab", "verify", "--shell", "sh", "node"],
+    )
+
+    cli.main()
+
+    assert called == {
+        "environment": "node",
+        "shell": "sh",
+    }

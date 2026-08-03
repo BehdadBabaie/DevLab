@@ -114,6 +114,11 @@ def _main() -> None:
         help="Environment to verify.",
     )
 
+    verify_parser.add_argument(
+        "--shell",
+        help="Shell to use inside the environment.",
+    )
+
     verify_parser.set_defaults(func=handle_verify)
 
     args = parser.parse_args()
@@ -154,4 +159,7 @@ def handle_run(args: argparse.Namespace) -> None:
 
 
 def handle_verify(args: argparse.Namespace) -> None:
-    verify_environment(args.environment)
+    verify_environment(
+        args.environment,
+        shell=args.shell,
+    )

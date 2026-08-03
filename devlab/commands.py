@@ -26,6 +26,10 @@ VERIFY_COMMANDS = {
 }
 
 
+def validate_shell(shell: str) -> None:
+    if not shell.strip():
+        raise ValueError("Shell must be a non-empty string.")
+
 def docker_compose(*args: str) -> None:
     command = " ".join(args)
 
@@ -98,8 +102,7 @@ def run_environment(
     if shell is None:
         shell = get_settings().default_shell
 
-    if not shell.strip():
-        raise ValueError("Shell must be a non-empty string.")
+    validate_shell(shell)
 
     console.print(f"🚀 Launching [bold]{environment}[/]...")
     docker_compose(
@@ -110,7 +113,7 @@ def run_environment(
     )
 
 
-def verify_environment(environment: str) -> None:
+def verify_environment(environment: str, shell: str | None = None) -> None:
     if not is_valid_environment(environment):
         return
 
@@ -122,6 +125,11 @@ def verify_environment(environment: str) -> None:
         )
         return
 
+    if shell is None:
+        shell = get_settings().default_shell
+
+    validate_shell(shell)
+
     script = " && ".join(commands)
 
     console.print(f"🔍 Verifying [bold]{environment}[/]...")
@@ -129,7 +137,7 @@ def verify_environment(environment: str) -> None:
         "run",
         "--rm",
         environment,
-        get_settings().default_shell,
+        shell,
         "-c",
         script,
     )
