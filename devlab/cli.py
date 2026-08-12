@@ -7,6 +7,7 @@ from devlab.commands import (
     run_environment,
     show_config,
     show_version,
+    status_environments,
     verify_environment,
 )
 from devlab.console import console
@@ -104,6 +105,13 @@ def _main() -> None:
 
     run_parser.set_defaults(func=handle_run)
 
+    status_parser = subparsers.add_parser(
+        "status",
+        help="Show environment status.",
+    )
+
+    status_parser.set_defaults(func=handle_status)
+
     verify_parser = subparsers.add_parser(
         "verify",
         help="Verify an environment."
@@ -156,6 +164,10 @@ def handle_run(args: argparse.Namespace) -> None:
         args.environment,
         shell=args.shell,
     )
+
+
+def handle_status(args: argparse.Namespace) -> None:
+    status_environments()
 
 
 def handle_verify(args: argparse.Namespace) -> None:

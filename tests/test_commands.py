@@ -190,3 +190,58 @@ def test_docker_compose_handles_command_failure(monkeypatch, capsys):
     captured = capsys.readouterr()
 
     assert "✗ Command failed." in captured.out
+
+
+def test_status_environments_reports_image_status(monkeypatch, capsys):
+    def fake_run(*args, **kwargs):
+        class Result:
+            returncode = 0
+
+        return Result()
+
+    monkeypatch.setattr(
+        commands.subprocess,
+        "run",
+        fake_run,
+    )
+
+    monkeypatch.setattr(
+        commands,
+        "get_services",
+        lambda: ["python", "rust"],
+    )
+
+    commands.status_environments()
+
+    output = capsys.readouterr().out
+
+    assert "python" in output
+    assert "rust" in output
+    assert "image available" in output
+
+
+def test_status_environments_reports_missing_image(monkeypatch, capsys):
+    def fake_run(*args, **kwargs):
+        class Result:
+            returncode = 1
+
+        return Result()
+
+    monkeypatch.setattr(
+        commands.subprocess,
+        "run",
+        fake_run,
+    )
+
+    monkeypatch.setattr(
+        commands,
+        "get_services",
+        lambda: ["python"],
+    )
+
+    commands.status_environments()
+
+    output = capsys.readouterr().out
+
+    assert "python" in output
+    assert "image not built" in output

@@ -172,6 +172,32 @@ def show_config() -> None:
     console.print(f"Default shell: {settings.default_shell}")
 
 
+def status_environments() -> None:
+    console.rule("[bold cyan]DevLab Environment Status[/]")
+    console.print()
+
+    for environment in get_services():
+        image = f"devlab-{environment}"
+
+        try:
+            available = _docker_image_exists(image)
+        except FileNotFoundError:
+            console.print(
+                "[bold red]✗ Docker is not installed or is not available "
+                "on your PATH.[/]"
+            )
+            return
+
+        if available:
+            console.print(
+                f"✅ [green]{environment:<10}[/] image available"
+            )
+        else:
+            console.print(
+                f"❌ [red]{environment:<10}[/] image not built"
+            )
+
+
 def _run_docker_compose(*args: str) -> None:
 
     try:
@@ -193,3 +219,13 @@ def _run_docker_compose(*args: str) -> None:
         raise DockerCommandError(
             "Command failed."
         ) from error
+
+
+def _docker_image_exists(image: str) -> bool:
+    result = subprocess.run(
+        ["docker", "image", "inspect", image],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    return result.returncode == 0
