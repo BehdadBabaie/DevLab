@@ -15,7 +15,24 @@ def get_compose_file() -> Path:
 def get_services(compose_file: Path | None = None) -> list[str]:
     compose_file = compose_file or get_compose_file()
 
-    with compose_file.open("r", encoding="utf-8") as file:
-        compose = yaml.safe_load(file)
+    try:
+        with compose_file.open("r", encoding="utf-8") as file:
+            compose = yaml.safe_load(file) or {}
+    except yaml.YAMLError as error:
+        raise ValueError(
+            "Compose file contains invalid YAML."
+        ) from error
+
+    if "services" not in compose:
+        raise ValueError(
+            "Compose file is missing the 'services' section."
+        )
+
+    if not isinstance(compose["services"], dict):
+        raise ValueError(
+            "Compose file 'services' section must be a mapping."
+        )
 
     return sorted(compose["services"].keys())
+
+
