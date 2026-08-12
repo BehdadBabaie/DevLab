@@ -26,6 +26,10 @@ VERIFY_COMMANDS = {
 }
 
 
+class DockerCommandError(Exception):
+    """Raised when a Docker Compose command cannot be executed."""
+
+
 def validate_shell(shell: str) -> None:
     if not shell.strip():
         raise ValueError("Shell must be a non-empty string.")
@@ -37,25 +41,9 @@ def docker_compose(*args: str) -> None:
         console.print(f"[dim]$ docker compose {command}[/dim]")
 
     try:
-        subprocess.run(
-            [
-                "docker",
-                "compose",
-                *args,
-            ],
-            check=True,
-        )
-    except FileNotFoundError:
-        console.print(
-            "[bold red]✗ Docker is not installed or is not available on your PATH.[/]"
-        )
-        console.print(
-            "[bold red]Please install Docker Desktop and ensure 'docker' is available "
-            "on your PATH.[/]"
-        )
-        sys.exit(1)
-    except subprocess.CalledProcessError:
-        console.print("[bold red]✗ Command failed.[/]")
+        _run_docker_compose(*args)
+    except DockerCommandError as error:
+        console.print(f"[bold red]✗ {error}[/]")
         sys.exit(1)
 
 
@@ -182,3 +170,26 @@ def show_config() -> None:
 
     console.print(f"Compose file : {settings.compose_file_name}")
     console.print(f"Default shell: {settings.default_shell}")
+
+
+def _run_docker_compose(*args: str) -> None:
+
+    try:
+        subprocess.run(
+            [
+                "docker",
+                "compose",
+                *args,
+            ],
+            check=True,
+        )
+    except FileNotFoundError as error:
+        raise DockerCommandError(
+            "Docker is not installed or is not available on your PATH.\n"
+            "Please install Docker Desktop and ensure 'docker' is available "
+            "on your PATH."
+        ) from error
+    except subprocess.CalledProcessError as error:
+        raise DockerCommandError(
+            "Command failed."
+        ) from error
