@@ -146,8 +146,26 @@ def doctor() -> None:
             stderr=subprocess.DEVNULL,
         )
         console.print("✅ Docker executable found")
-    except (FileNotFoundError, subprocess.CalledProcessError):
+    except FileNotFoundError:
         console.print("❌ Docker executable not found")
+        return
+
+    if _docker_is_available():
+        console.print("✅ Docker daemon available")
+    else:
+        console.print(
+            "❌ Docker daemon unavailable\n"
+            "Start Docker Desktop and run this command again."
+        )
+        return
+
+    if _docker_compose_is_available():
+        console.print("✅ Docker compose available")
+    else:
+        console.print(
+            "❌ Docker compose unavailable"
+        )
+        return
 
     compose_file = get_compose_file()
     if compose_file.exists():
@@ -157,9 +175,22 @@ def doctor() -> None:
 
     try:
         services = get_services()
+        console.print("✅ Compose configuration valid")
         console.print(f"✅ {len(services)} environments discovered")
-    except Exception:
-        console.print("❌ Unable to discover environments")
+        console.print()
+        console.print("[bold]Environment images")
+
+        for environment in services:
+            if _environment_image_exists(environment):
+                console.print(
+                    f"✅ [green]{environment:<10}[/] image available"
+                )
+            else:
+                console.print(
+                    f"❌ [red]{environment:<10}[/] image not built"
+                )
+    except ValueError as error:
+        console.print(f"❌ Invalid Compose configuration: {error}")
 
 
 def show_config() -> None:
@@ -177,10 +208,9 @@ def status_environments() -> None:
     console.print()
 
     for environment in get_services():
-        image = f"devlab-{environment}"
 
         try:
-            available = _docker_image_exists(image)
+            available = _environment_image_exists(environment)
         except FileNotFoundError:
             console.print(
                 "[bold red]✗ Docker is not installed or is not available "
@@ -216,8 +246,9 @@ def _run_docker_compose(*args: str) -> None:
             "on your PATH."
         ) from error
     except subprocess.CalledProcessError as error:
+        command = " ".join(error.cmd)
         raise DockerCommandError(
-            "Command failed."
+            f"Command failed: {command}"
         ) from error
 
 
@@ -229,3 +260,27 @@ def _docker_image_exists(image: str) -> bool:
     )
 
     return result.returncode == 0
+
+
+def _docker_is_available() -> bool:
+    result = subprocess.run(
+        ["docker", "info"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    return result.returncode == 0
+
+
+def _docker_compose_is_available() -> bool:
+    result = subprocess.run(
+        ["docker", "compose", "version"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    return result.returncode == 0
+
+
+def _environment_image_exists(environment: str) -> bool:
+    return _docker_image_exists(f"devlab-{environment}")
