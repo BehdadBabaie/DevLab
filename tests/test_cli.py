@@ -1,5 +1,7 @@
 import sys
 
+import pytest
+
 from devlab import cli
 
 
@@ -96,3 +98,31 @@ def test_verify_shell(monkeypatch):
         "environment": "node",
         "shell": "sh",
     }
+
+
+def test_invalid_shell_reports_error(monkeypatch, capsys):
+    def fake_run(
+        environment: str,
+        shell: str | None = None,
+    ) -> None:
+        raise cli.InvalidShellError(
+            "Shell must be a non-empty string."
+        )
+
+    monkeypatch.setattr(cli, "run_environment", fake_run)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["devlab", "run", "--shell", "   ", "rust"],
+    )
+
+    with pytest.raises(SystemExit) as error:
+        cli.main()
+
+    assert error.value.code == 1
+
+    output = capsys.readouterr().out
+
+    assert "Invalid shell" in output
+    assert "Shell must be a non-empty string." in output

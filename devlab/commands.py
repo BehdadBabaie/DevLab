@@ -30,9 +30,16 @@ class DockerCommandError(Exception):
     """Raised when a Docker Compose command cannot be executed."""
 
 
+class InvalidShellError(ValueError):
+    """Raised when an invalid shell is provided."""
+
+
 def validate_shell(shell: str) -> None:
     if not shell.strip():
-        raise ValueError("Shell must be a non-empty string.")
+        raise InvalidShellError(
+            "Shell must be a non-empty string.\n"
+            "Use --shell <shell> to specify a shell such as bash or sh."
+        )
 
 def docker_compose(*args: str) -> None:
     command = " ".join(args)
@@ -168,10 +175,14 @@ def doctor() -> None:
         return
 
     compose_file = get_compose_file()
-    if compose_file.exists():
-        console.print(f"✅ {compose_file.name} found")
-    else:
-        console.print(f"❌ {compose_file.name} not found")
+    if not compose_file.exists():
+        console.print(
+            f"❌ {compose_file.name} not found\n"
+            "Check that the configured Compose file exists in the project root."
+        )
+        return
+
+    console.print(f"✅ {compose_file.name} found")
 
     try:
         services = get_services()

@@ -62,6 +62,13 @@ def test_run_environment_calls_docker_compose(monkeypatch):
     )
 
 
+def test_validate_shell_rejects_empty_shell():
+    with pytest.raises(
+        commands.InvalidShellError,
+        match="Shell must be a non-empty string",
+    ):
+        commands.validate_shell("   ")
+
 
 def test_verify_environment_calls_docker_compose(monkeypatch):
     called = {}
@@ -292,18 +299,40 @@ def test_docker_compose_is_available_returns_false(monkeypatch):
 
     assert commands._docker_compose_is_available() is False
 
+def test_doctor_reports_valid_compose_configuration(
+    monkeypatch,
+    capsys,
+    tmp_path,
+):
+    compose_file = tmp_path / "compose.yaml"
+    compose_file.touch()
 
-def test_doctor_reports_valid_compose_configuration(monkeypatch, capsys):
+    monkeypatch.setattr(
+        commands,
+        "get_compose_file",
+        lambda: compose_file,
+    )
+
     monkeypatch.setattr(
         commands.subprocess,
         "run",
-        lambda *args, **kwargs: type("Result", (), {"returncode": 0})(),
+        lambda *args, **kwargs: type(
+            "Result",
+            (),
+            {"returncode": 0},
+        )(),
     )
 
     monkeypatch.setattr(
         commands,
         "get_services",
         lambda: ["python", "go", "rust"],
+    )
+
+    monkeypatch.setattr(
+        commands,
+        "_environment_image_exists",
+        lambda environment: True,
     )
 
     commands.doctor()
@@ -314,11 +343,28 @@ def test_doctor_reports_valid_compose_configuration(monkeypatch, capsys):
     assert "3 environments discovered" in output
 
 
-def test_doctor_reports_invalid_compose_configuration(monkeypatch, capsys):
+def test_doctor_reports_invalid_compose_configuration(
+    monkeypatch,
+    capsys,
+    tmp_path,
+):
+    compose_file = tmp_path / "compose.yaml"
+    compose_file.touch()
+
+    monkeypatch.setattr(
+        commands,
+        "get_compose_file",
+        lambda: compose_file,
+    )
+
     monkeypatch.setattr(
         commands.subprocess,
         "run",
-        lambda *args, **kwargs: type("Result", (), {"returncode": 0})(),
+        lambda *args, **kwargs: type(
+            "Result",
+            (),
+            {"returncode": 0},
+        )(),
     )
 
     monkeypatch.setattr(
@@ -546,3 +592,5 @@ def test_status_environments_handles_missing_docker(
     output = capsys.readouterr().out
 
     assert "Docker is not installed" in output
+
+

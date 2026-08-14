@@ -1,6 +1,7 @@
 import argparse
 
 from devlab.commands import (
+    InvalidShellError,
     build_environment,
     doctor,
     list_environments,
@@ -17,6 +18,11 @@ from devlab.state import state
 def main() -> None:
     try:
         _main()
+    except InvalidShellError as error:
+        console.print("[bold red]✗ Invalid shell[/]")
+        console.print()
+        console.print(error)
+        raise SystemExit(1)
     except ValueError as error:
         console.print("[bold red]✗ Invalid configuration[/]")
         console.print()
