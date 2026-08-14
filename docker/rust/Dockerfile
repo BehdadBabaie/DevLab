@@ -12,7 +12,10 @@ USER dev
 
 ENV PATH="/home/dev/.cargo/bin:${PATH}"
 
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+ARG RUST_VERSION=1.89.0
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
+    --default-toolchain ${RUST_VERSION}
 
 WORKDIR /workspace
 

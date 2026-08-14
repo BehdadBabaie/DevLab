@@ -149,19 +149,28 @@ everything image.
 
 ## Versioning
 
-Toolchain versions should be deliberate and reproducible.
+Each environment's Dockerfile is the authoritative definition of the
+toolchain versions provided by that environment.
 
-When changing a language version:
+DevLab does not maintain a separate environment-version registry.
 
-1. Update the environment definition.
-2. Rebuild the image.
-3. Verify the installed toolchain.
-4. Run the relevant tests or smoke checks.
-5. Document the supported version where appropriate.
+Toolchain versions should be explicitly declared whenever practical.
+DevLab may use version ranges where the underlying package source
+requires them, but the supported major or minor version should still
+be explicit.
 
-Do not silently change versions as part of unrelated tickets.
+When changing a language or toolchain version:
 
----
+1. Update the relevant environment Dockerfile.
+2. Rebuild the environment image.
+3. Run `devlab verify <environment>`.
+4. Confirm `devlab status` reports the image as available.
+5. Update documentation when the supported version changes.
+
+Version changes should be intentional and isolated from unrelated
+changes.
+
+Exact dependency or image digests are not required at this stage.
 
 ## Verification
 
@@ -298,6 +307,9 @@ Before considering an environment complete:
 - [ ] `devlab status` reports the image correctly.
 - [ ] Automated tests cover the relevant CLI behavior.
 - [ ] Documentation is updated.
+- [ ] Toolchain version is explicitly defined where practical.
+- [ ] Toolchain version can be verified.
+- [ ] Updating the toolchain version requires an intentional Dockerfile change.
 
 ---
 
