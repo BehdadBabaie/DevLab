@@ -172,6 +172,17 @@ changes.
 
 Exact dependency or image digests are not required at this stage.
 
+### Supported Toolchain Versions
+
+The currently supported toolchain versions are:
+
+| Environment | Toolchain version |
+|-------------|-------------------|
+| Python      | 3.14              |
+| Go          | 1.26.6            |
+| Rust        | 1.89.0            |
+| Node.js     | 22.x              |
+
 ## Verification
 
 Every environment should have a meaningful verification command where
