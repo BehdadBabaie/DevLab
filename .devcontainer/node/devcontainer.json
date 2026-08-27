@@ -1,0 +1,28 @@
+{
+  "name": "DevLab - Node.js",
+
+  "dockerComposeFile": "../../compose.yaml",
+
+  "service": "node",
+
+  "workspaceFolder": "/workspace",
+
+  "remoteUser": "dev",
+
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "files.trimTrailingWhitespace": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
-  "name": "DevLab",
+  "name": "DevLab - Python",
 
-  "dockerComposeFile": "../compose.yaml",
+  "dockerComposeFile": "../../compose.yaml",
 
   "service": "python",
 
@@ -10,8 +10,6 @@
   "remoteUser": "dev",
 
   "shutdownAction": "stopCompose",
-
-  "postCreateCommand": "bash .devcontainer/post-create.sh",
 
   "customizations": {
     "vscode": {
@@ -25,8 +23,7 @@
       "settings": {
         "editor.formatOnSave": true,
         "files.trimTrailingWhitespace": true,
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "python.defaultInterpreterPath": "/usr/bin/python3"
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   }

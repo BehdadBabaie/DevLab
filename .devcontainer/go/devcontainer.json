@@ -1,0 +1,28 @@
+{
+  "name": "DevLab - Go",
+
+  "dockerComposeFile": "../../compose.yaml",
+
+  "service": "go",
+
+  "workspaceFolder": "/workspace",
+
+  "remoteUser": "dev",
+
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "files.trimTrailingWhitespace": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
